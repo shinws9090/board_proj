@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class BoardDto {
 	
-	private String board_num;
+	private int board_num;
 	private String board_name;
 	private String board_pass;
 	private String board_subject;
@@ -21,7 +21,7 @@ public class BoardDto {
 	public BoardDto() {
 	}
 	
-	public BoardDto(String board_num, String board_name, String board_pass, String board_subject, String board_content,
+	public BoardDto(int board_num, String board_name, String board_pass, String board_subject, String board_content,
 			String board_file, int board_re_ref, int board_re_lev, int board_re_seq, int board_readcount,
 			Date board_date) {
 		super();
@@ -62,10 +62,10 @@ public class BoardDto {
 		this.board_readcount = board_readcount;
 	}
 	
-	public String getBoard_num() {
+	public int getBoard_num() {
 		return board_num;
 	}
-	public void setBoard_num(String board_num) {
+	public void setBoard_num(int board_num) {
 		this.board_num = board_num;
 	}
 	public String getBoard_name() {

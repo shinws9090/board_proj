@@ -9,6 +9,7 @@
 <%=JndiDS.getConnection() %>
 </head>
 <body>
-<a href="boardWriteForm.do">게시판글쓰기</a>
+<a href="boardWriteForm.do">게시판글쓰기</a> <br>
+<a href="boardList.do">게시판글 목록</a>
 </body>
 </html>

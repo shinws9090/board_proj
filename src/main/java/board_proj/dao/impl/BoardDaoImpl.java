@@ -30,9 +30,8 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public int selectListCount() {
 		String sql = "select count(*) from board";
-		try(PreparedStatement pstmt = con.prepareStatement(sql);
-				ResultSet rs = pstmt.executeQuery()){
-			if(rs.next()) {
+		try (PreparedStatement pstmt = con.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+			if (rs.next()) {
 				return rs.getInt(1);
 			}
 		} catch (SQLException e) {
@@ -44,32 +43,29 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public ArrayList<BoardDto> selectArticleList(int page, int limit) {
 		String sql = "select BOARD_NUM, BOARD_NAME, BOARD_PASS, BOARD_SUBJECT, BOARD_CONTENT, BOARD_FILE, \r\n"
-				+ "		BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_READCOUNT, BOARD_DATE\r\n" 
-				+ "from board \r\n"
-				+ "order by BOARD_RE_REF desc, BOARD_RE_SEQ asc\r\n" 
-				+ "limit ?,?;";
-		int startrow = (page-1)*limit;
-		try(PreparedStatement pstmt = con.prepareStatement(sql);){
+				+ "		BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_READCOUNT, BOARD_DATE\r\n" + "from board \r\n"
+				+ "order by BOARD_RE_REF desc, BOARD_RE_SEQ asc\r\n" + "limit ?,?;";
+		int startrow = (page - 1) * limit;
+		try (PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmt.setInt(1, startrow);
 			pstmt.setInt(2, limit);
-			
-			ResultSet rs = pstmt.executeQuery();
-			if(rs.next()) {
-				ArrayList<BoardDto> list = new ArrayList<BoardDto>();
-				do {
-					list.add(getBoardDTO(rs));
-				}while(rs.next());
-				
-				return list;
-				
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				if (rs.next()) {
+					ArrayList<BoardDto> list = new ArrayList<BoardDto>();
+					do {
+						list.add(getBoardDTO(rs));
+					} while (rs.next());
+
+					return list;
+
+				}
 			}
-			
-			
+
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 
 		return null;
 	}
@@ -77,25 +73,40 @@ public class BoardDaoImpl implements BoardDao {
 	private BoardDto getBoardDTO(ResultSet rs) throws SQLException {
 //		"BOARD_NUM, BOARD_NAME, BOARD_PASS, BOARD_SUBJECT, BOARD_CONTENT, BOARD_FILE, \r\n"
 //				+ "		BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_READCOUNT, BOARD_DATE";
-		String board_num = rs.getString("BOARD_NUM");      
-		String board_name = rs.getString("BOARD_NAME");     
-		String board_pass = rs.getString("BOARD_PASS");     
-		String board_subject = rs.getString("BOARD_SUBJECT");  
-		String board_content = rs.getString("BOARD_CONTENT");  
-		String board_file = rs.getString("BOARD_FILE");     
-		int board_re_ref = rs.getInt("BOARD_RE_REF");      
-		int board_re_lev = rs.getInt("BOARD_RE_LEV");      
-		int board_re_seq = rs.getInt("BOARD_RE_SEQ");      
-		int board_readcount = rs.getInt("BOARD_READCOUNT");   
-		Date board_date = rs.getDate("BOARD_DATE");       
-		
-		return new BoardDto(board_num, board_name, board_pass, board_subject, board_content, board_file, board_re_ref, 
+		int board_num = Integer.parseInt(rs.getString("BOARD_NUM"));
+		String board_name = rs.getString("BOARD_NAME");
+		String board_pass = rs.getString("BOARD_PASS");
+		String board_subject = rs.getString("BOARD_SUBJECT");
+		String board_content = rs.getString("BOARD_CONTENT");
+		String board_file = rs.getString("BOARD_FILE");
+		int board_re_ref = rs.getInt("BOARD_RE_REF");
+		int board_re_lev = rs.getInt("BOARD_RE_LEV");
+		int board_re_seq = rs.getInt("BOARD_RE_SEQ");
+		int board_readcount = rs.getInt("BOARD_READCOUNT");
+		Date board_date = rs.getDate("BOARD_DATE");
+
+		return new BoardDto(board_num, board_name, board_pass, board_subject, board_content, board_file, board_re_ref,
 				board_re_lev, board_re_seq, board_readcount, board_date);
 	}
 
 	@Override
 	public BoardDto selectArticle(int board_num) {
-		// TODO Auto-generated method stub
+		String sql = "select BOARD_NUM, BOARD_NAME, BOARD_PASS, BOARD_SUBJECT, BOARD_CONTENT, BOARD_FILE,\r\n"
+				+ "BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_READCOUNT, BOARD_DATE\r\n"
+				+ "from board where BOARD_NUM = ?";
+		try (PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setInt(1, board_num);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				if (rs.next()) {
+					return getBoardDTO(rs);
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -129,31 +140,112 @@ public class BoardDaoImpl implements BoardDao {
 
 	@Override
 	public int insertReplayArticle(BoardDto article) {
-		// TODO Auto-generated method stub
+		replayUpdate(article);
+		
+		String sql = "INSERT INTO web_gradle_erp.board\r\n" + 
+				"(BOARD_NUM, BOARD_NAME, BOARD_PASS, BOARD_SUBJECT, BOARD_CONTENT, "
+				+ "BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_READCOUNT)\r\n" + 
+				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+			int nextNum = nextBoardNum();
+			pstmt.setInt(1, nextNum);
+			pstmt.setString(2, article.getBoard_name());
+			pstmt.setString(3, article.getBoard_pass());
+			pstmt.setString(4, article.getBoard_subject());
+			pstmt.setString(5, article.getBoard_content());
+			pstmt.setInt(6, article.getBoard_re_ref());
+			pstmt.setInt(7, article.getBoard_re_lev()+1);
+			pstmt.setInt(8, article.getBoard_re_seq()+1);
+			pstmt.setInt(9, article.getBoard_readcount());
+
+			return pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
+	}
+
+	private void replayUpdate(BoardDto article) {
+		String sql = "update board \r\n" + 
+				"	set BOARD_RE_SEQ = BOARD_RE_SEQ +1\r\n" + 
+				"	where BOARD_RE_REF =? and BOARD_RE_SEQ >?";
+		try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+			pstmt.setInt(1, article.getBoard_re_ref());
+			pstmt.setInt(2, article.getBoard_re_seq());
+			pstmt.executeUpdate();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	@Override
 	public int updateArticle(BoardDto article) {
-		// TODO Auto-generated method stub
+		String sql = "update board \r\n" 
+				+ "	set BOARD_SUBJECT = ? ,BOARD_CONTENT = ? \r\n"
+				+ "	where BOARD_NUM = ?";
+		try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+			pstmt.setString(1, article.getBoard_subject());
+			pstmt.setString(2, article.getBoard_content());
+			pstmt.setInt(3, article.getBoard_num());
+
+			return pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
 	@Override
 	public int deleteArticle(int board_num) {
-		// TODO Auto-generated method stub
+		String sql = "delete  from board  where BOARD_NUM = ?";
+
+		try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+			pstmt.setInt(1, board_num);
+
+			return pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		return 0;
 	}
 
 	@Override
 	public int updateReadCount(int board_num) {
-		// TODO Auto-generated method stub
+		String sql = "update board \r\n" + "	set BOARD_READCOUNT =BOARD_READCOUNT+1\r\n" + "	where BOARD_NUM = ?";
+		try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+			pstmt.setInt(1, board_num);
+
+			return pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		return 0;
 	}
 
 	@Override
 	public boolean isArticleBoardWriter(int board_num, String pass) {
-		// TODO Auto-generated method stub
+		String sql = "select 1 from board  where BOARD_NUM = ? and BOARD_PASS = ?";
+		try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+			pstmt.setInt(1, board_num);
+			pstmt.setString(2, pass);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				if (rs.next()) {
+					return true;
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		return false;
 	}
 

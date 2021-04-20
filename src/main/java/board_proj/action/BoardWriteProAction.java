@@ -19,14 +19,14 @@ public class BoardWriteProAction implements Action {
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		BoardWriteService service= new BoardWriteService();
-		BoardDto boardDto = new BoardDto();
 		String realFolder = request.getServletContext().getRealPath("/boardUpload");;
-		System.out.println(realFolder);
+//		System.out.println(realFolder);
 		int fileSize = 5*1024*1024;
 		
 		//생성 시키면서 파일은 업로드 폴더엔 업로드된다
 		MultipartRequest multi = new MultipartRequest(request, realFolder, fileSize, "UTF-8",new DefaultFileRenamePolicy());
 		
+		BoardDto boardDto = new BoardDto();
 		boardDto.setBoard_name(multi.getParameter("board_name"));
 		boardDto.setBoard_pass(multi.getParameter("board_pass"));
 		boardDto.setBoard_subject(multi.getParameter("board_subject"));

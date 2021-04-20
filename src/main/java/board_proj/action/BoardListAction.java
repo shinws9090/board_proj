@@ -20,6 +20,7 @@ public class BoardListAction implements Action {
 		
 		int page = 1;
 		int limit = 7;
+				
 		if(request.getParameter("page")!=null) {
 			page = Integer.parseInt(request.getParameter("page"));
 		}

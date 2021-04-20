@@ -44,7 +44,7 @@ public class BoardDaoTest {
 	
 	@Test
 	public void test01NextBoardNum() {
-		System.out.println("testNextBoardNum");
+		System.out.println("test01NextBoardNum");
 		int res = dao.nextBoardNum();
 		Assert.assertNotEquals(0, res);
 		System.out.println("next Number >>" +res);
@@ -52,7 +52,7 @@ public class BoardDaoTest {
 	
 	@Test
 	public void test02SelectListCount() {
-		System.out.println("testSelectListCount");
+		System.out.println("test02SelectListCount");
 		int res = dao.selectListCount();
 		Assert.assertNotEquals(-1, res);
 		System.out.println(res);
@@ -62,6 +62,7 @@ public class BoardDaoTest {
 
 	@Test
 	public void test03SelectArticleList() {
+		System.out.println("test03SelectArticleList");
 		ArrayList<BoardDto> list = dao.selectArticleList(1, 10);
 		Assert.assertNotNull(list);
 		list.stream().forEach(System.out::println);
@@ -73,7 +74,12 @@ public class BoardDaoTest {
 
 	@Test
 	public void test05SelectArticle() {
-		fail("Not yet implemented");
+		System.out.println("test05SelectArticle");
+		BoardDto boardDto = dao.selectArticle(1);
+		Assert.assertNotNull(boardDto);
+		
+		System.out.println(boardDto);
+	
 	}
 
 	@Test
@@ -93,22 +99,41 @@ public class BoardDaoTest {
 
 	@Test
 	public void testUpdateArticle() {
-		fail("Not yet implemented");
+		System.out.println("testUpdateArticle");
+		
+		BoardDto article = new BoardDto();
+		article.setBoard_num(22);
+		article.setBoard_subject("asdgasewrwer");
+		article.setBoard_content("수정");
+		
+		int res = dao.updateArticle(article);
+		Assert.assertEquals(1, res);
+		System.out.println("next Number >>" +res);
+		
 	}
 
 	@Test
-	public void testDeleteArticle() {
-		fail("Not yet implemented");
+	public void test08DeleteArticle() {
+		int board_num = dao.nextBoardNum()-1;
+		int res = dao.deleteArticle(board_num);
+		Assert.assertEquals(1, res);
+		System.out.println(dao.selectArticle(board_num));
 	}
 
 	@Test
 	public void testUpdateReadCount() {
-		fail("Not yet implemented");
+		int res = dao.updateReadCount(23);
+		Assert.assertEquals(1, res);
+		System.out.println(dao.selectArticle(23));
+		
 	}
 
 	@Test
-	public void testIsArticleBoardWriter() {
-		fail("Not yet implemented");
+	public void test07IsArticleBoardWriter() {
+		System.out.println("test07IsArticleBoardWriter");
+		int board_num = 28;
+		boolean res = dao.isArticleBoardWriter(board_num, "1111");
+		Assert.assertEquals(true, res);
 	}
 
 }

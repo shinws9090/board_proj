@@ -2,7 +2,7 @@
 #writeForm{
 	width: 500px;
 	height: 620px;
-	border: 1px solid red;
+	border: 1px dotted #fffddd;
 	margin: auto;
 }
 
@@ -14,16 +14,18 @@ table{
 	width: 450px;
 }
 .td_left{
-	border: 1px solid #ccc;;
+	text-align: center;
+	border: 1px solid #fffddd;;
 	width: 150px;
-	background: #ccc;
+	background: #fffddd;
 }
 .td_right{
-	border: 1px solid #ccc;;
+	border: 1px solid #fffddd;;
 	width: 300px;
-	background: #ccc;
+	background: #fffddd;
 }
 #commandCell{
 	text-align: center;
 	
 }
+
