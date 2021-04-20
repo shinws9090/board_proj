@@ -26,14 +26,15 @@
 	 <c:forEach var="list" items="${articleList }">
 	 	<tr>
 	 	<td>${list.board_num } </td>
-	 	<c:choose>
-		<c:when test="${list.board_re_seq>0}">
-	 	<td> &nbsp;&nbsp;▶<a href="boardDetail.do?board_num=${list.board_num }&page=${pageInfo.page}"> ${list.board_subject} </a> </td>
-		</c:when>
-		<c:otherwise>
-	 	<td> <a href="boardDetail.do?board_num=${list.board_num }&page=${pageInfo.page}"> ${list.board_subject} </a> </td>
-		</c:otherwise>
-		</c:choose>
+	 	<td id="subject">
+	 	<c:if test="${list.board_re_seq!=0}">
+	 	<c:forEach begin="0" end="${list.board_re_seq}">
+	 	&nbsp;
+	 	</c:forEach>
+	 	▶
+	 	</c:if>
+	 	<a href="boardDetail.do?board_num=${list.board_num }&page=${pageInfo.page}"> ${list.board_subject} </a>
+		</td>
 	 	<td>${list.board_name} </td>
 	 	<td>${list.board_date } </td>
 	 	<td>${list.board_readcount } </td>

@@ -30,7 +30,9 @@ td{
 	background: #ccc;
 	text-align: center;
 }
-
+#subject{
+	text-align: left;
+}
 
 table td:nth-child(1) {
 	width: 10%
