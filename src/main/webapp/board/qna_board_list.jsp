@@ -28,16 +28,28 @@
 	 	<td>${list.board_num } </td>
 	 	<td id="subject">
 	 	<c:if test="${list.board_re_seq!=0}">
-	 	<c:forEach begin="0" end="${list.board_re_seq}">
+	 	<c:forEach begin="0" end="${list.board_re_lev}">
 	 	&nbsp;
 	 	</c:forEach>
 	 	▶
 	 	</c:if>
-	 	<a href="boardDetail.do?board_num=${list.board_num }&page=${pageInfo.page}"> ${list.board_subject} </a>
+	 	<a href="boardDetail.do?board_num=${list.board_num }&page=${pageInfo.page}"> ${list.board_subject}</a>
+	 	<c:forEach var="list2" items="${articleList }">
+	 	<c:if test="${list2.board_re_ref  == list.board_re_ref 
+	 			&& list.board_re_lev-1 == list2.board_re_lev
+	 			}">
+	 			
+	 		  <%-- ${list2.board_subject} --%>
+	 			${ list.board_re_lev-1}
+	 			${ list.board_re_seq*list2.board_re_seq},
+	 	</c:if>
+	 	</c:forEach>
+	 			${ list.board_re_lev}
+	 			${ list.board_re_seq}
 		</td>
-	 	<td>${list.board_name} </td>
-	 	<td>${list.board_date } </td>
-	 	<td>${list.board_readcount } </td>
+	 	<td>${list.board_name}</td>
+	 	<td>${list.board_date }</td>
+	 	<td>${list.board_readcount }</td>
 	 	</tr>
 	 </c:forEach>
 	</table>
