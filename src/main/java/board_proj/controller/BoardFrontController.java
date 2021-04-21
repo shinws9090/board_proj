@@ -1,6 +1,7 @@
 package board_proj.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -37,110 +38,97 @@ public class BoardFrontController extends HttpServlet {
 
 		ActionForward forward = null;
 		Action action = null;
+//		try {
+//			switch (command) {
+//			case "/boardWriteForm.do":
+//				forward = new ActionForward();
+//				forward.setPath("/board/qna_board_write.jsp");
+//			case "/boardWritePro.do":
+//				action = new BoardWriteProAction();
+//				forward = action.execute(request, response);
+//			case "/boardList.do":
+//				action = new BoardListAction();
+//				forward = action.execute(request, response);
+//			case "/boardDetail.do":
+//				action = new BoardDetailAction();
+//				forward = action.execute(request, response);
+//			case "/boardReplyForm.do":
+//				action = new BoardReplyFormAction();
+//				forward = action.execute(request, response);
+//			case "/boardReplyPro.do":
+//				action = new BoardReplyProAction();
+//				forward = action.execute(request, response);
+//			case "/boardDeleteForm.do":
+//				String nowPage = request.getParameter("page");
+//				request.setAttribute("page", nowPage);
+//				int board_num = Integer.parseInt(request.getParameter("board_num"));
+//				request.setAttribute("board_num", board_num);
+//				forward = new ActionForward();
+//				forward.setPath("/board/qna_board_delete.jsp");
+//			case "/boardDeletePro.do":
+//				action = new BoardDeleteProAction();
+//				forward = action.execute(request, response);
+//			case "/file_down.do":
+//				action = new FileDownAction();
+//				forward = action.execute(request, response);
+//			case "/boardModifyForm.do":
+//				action = new BoardModifyFormAction();
+//				forward = action.execute(request, response);
+//			case "/boardModifyPro.do":
+//				action = new BoardModifyProAction();
+//				forward = action.execute(request, response);
+//			}
+//		} catch (IOException | SQLException e1) {
+//			e1.printStackTrace();
+//		}
 
-		if (command.equals("/boardWriteForm.do")) {
+		try {
+			if (command.equals("/boardWriteForm.do")) {
 
-			forward = new ActionForward();
-			forward.setPath("/board/qna_board_write.jsp");
+				forward = new ActionForward();
+				forward.setPath("/board/qna_board_write.jsp");
 
-		} else if (command.equals("/boardWritePro.do")) {
-			action = new BoardWriteProAction();
+			} else if (command.equals("/boardWritePro.do")) {
+				action = new BoardWriteProAction();
+				forward = action.execute(request, response);
+			} else if (command.equals("/boardList.do")) {
+				action = new BoardListAction();
+				forward = action.execute(request, response);
+			} else if (command.equals("/boardDetail.do")) {
+				action = new BoardDetailAction();
+				forward = action.execute(request, response);
+			} else if (command.equals("/boardReplyForm.do")) {
+				action = new BoardReplyFormAction();
+				forward = action.execute(request, response);
+			} else if (command.equals("/boardReplyPro.do")) {
+				action = new BoardReplyProAction();
+				forward = action.execute(request, response);
+			} else if (command.equals("/boardDeleteForm.do")) {
 
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (command.equals("/boardList.do")) {
-			action = new BoardListAction();
+				String nowPage = request.getParameter("page");
+				request.setAttribute("page", nowPage);
+				int board_num = Integer.parseInt(request.getParameter("board_num"));
+				request.setAttribute("board_num", board_num);
+				forward = new ActionForward();
+				forward.setPath("/board/qna_board_delete.jsp");
 
-			try {
+			} else if (command.equals("/boardDeletePro.do")) {
+				action = new BoardDeleteProAction();
 				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (command.equals("/boardDetail.do")) {
-			action = new BoardDetailAction();
-			try {
+			} else if (command.equals("/file_down.do")) {
+				action = new FileDownAction();
 				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (command.equals("/boardReplyForm.do")) {
-			action = new BoardReplyFormAction();
-			try {
+			} else if (command.equals("/boardModifyForm.do")) {
+				action = new BoardModifyFormAction();
 				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (command.equals("/boardReplyPro.do")) {
-			action = new BoardReplyProAction();
-			try {
+			} else if (command.equals("/boardModifyPro.do")) {
+				action = new BoardModifyProAction();
 				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		} else if (command.equals("/boardDeleteForm.do")) {
-			
-			String nowPage = request.getParameter("page");
-			request.setAttribute("page", nowPage);
-			int board_num = Integer.parseInt(request.getParameter("board_num"));
-			request.setAttribute("board_num", board_num);
-			forward = new ActionForward();
-			forward.setPath("/board/qna_board_delete.jsp");
-			
-		} else if (command.equals("/boardDeletePro.do")) {
-			action = new BoardDeleteProAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}else if (command.equals("/file_down.do")) {
-			action = new FileDownAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (command.equals("/boardModifyForm.do")) {
-			action = new BoardModifyFormAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (command.equals("/boardModifyPro.do")) {
-			action = new BoardModifyProAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		if (forward != null) {
 			if (forward.isRediract()) {
 				response.sendRedirect(forward.getPath());

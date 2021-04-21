@@ -8,14 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import board_proj.dto.ActionForward;
 import board_proj.dto.BoardDto;
-import board_proj.seavice.BoardDetailService;
+import board_proj.seavice.BoardReplyService;
 
 public class BoardReplyFormAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, SQLException {
-		BoardDetailService service = new BoardDetailService();
+		BoardReplyService service = new BoardReplyService();
 
 		int board_num = Integer.parseInt(request.getParameter("board_num"));
 		String page = request.getParameter("page");

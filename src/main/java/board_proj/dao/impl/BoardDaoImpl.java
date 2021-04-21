@@ -158,11 +158,26 @@ public class BoardDaoImpl implements BoardDao {
 			pstmt.setInt(7, article.getBoard_re_lev()+1);
 			pstmt.setInt(8, article.getBoard_re_seq()+1);
 			pstmt.setInt(9, article.getBoard_readcount());
-
-			return pstmt.executeUpdate();
-
+			
+			int res = pstmt.executeUpdate();
+			if(res==1) {
+				con.commit();
+				return res;
+			}
+			
 		} catch (SQLException e) {
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
+		}finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return 0;
 	}
@@ -172,10 +187,16 @@ public class BoardDaoImpl implements BoardDao {
 				"	set BOARD_RE_SEQ = BOARD_RE_SEQ +1\r\n" + 
 				"	where BOARD_RE_REF =? and BOARD_RE_SEQ >?";
 		try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+			con.setAutoCommit(false);
 			pstmt.setInt(1, article.getBoard_re_ref());
 			pstmt.setInt(2, article.getBoard_re_seq());
 			pstmt.executeUpdate();
 		} catch (SQLException e1) {
+			try {
+				con.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			e1.printStackTrace();
 		}
 	}

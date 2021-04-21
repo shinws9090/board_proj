@@ -8,8 +8,10 @@
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/qna_board_write.css">
 </head>
 <body>
-	${article }
-${page }
+	board_re_ref : ${article.board_re_ref }<br>
+	board_re_lev : ${article.board_re_lev }<br>
+	board_re_seq : ${article.board_re_seq }<br>
+	page : ${page }<br>
 	<section id="writeForm">
 		<h2>답변글 등록</h2>
 		<form action="boardReplyPro.do" method="post" name="boardform">
