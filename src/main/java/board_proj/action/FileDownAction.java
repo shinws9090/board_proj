@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -18,9 +17,13 @@ public class FileDownAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, SQLException {
+			{
 
-		download1(request, response);
+		try {
+			download1(request, response);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 //		download2(request, response);
 

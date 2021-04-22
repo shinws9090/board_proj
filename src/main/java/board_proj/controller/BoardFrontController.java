@@ -1,29 +1,67 @@
 package board_proj.controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import board_proj.action.Action;
-import board_proj.action.BoardDeleteProAction;
-import board_proj.action.BoardDetailAction;
-import board_proj.action.BoardListAction;
-import board_proj.action.BoardModifyFormAction;
-import board_proj.action.BoardModifyProAction;
-import board_proj.action.BoardReplyFormAction;
-import board_proj.action.BoardReplyProAction;
-import board_proj.action.BoardWriteProAction;
-import board_proj.action.FileDownAction;
+import board_proj.action.NullAction;
 import board_proj.dto.ActionForward;
 
-@WebServlet("*.do")
+@WebServlet(urlPatterns = { "*.do" }, 
+			loadOnStartup = 1, 
+			initParams = {
+					@WebInitParam(
+				name = "configFile", 
+				value = "/WEB-INF/commandAction.properties") 
+					}) // 뭐여이게
 public class BoardFrontController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private Map<String, Action> actionMap = new HashMap<String, Action>();
+
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+//		System.out.println("init()-config >>"+config.getInitParameter("configFile"));
+		String configFile = config.getInitParameter("configFile");
+		try (InputStream is = config.getServletContext().getResourceAsStream(configFile)) {
+			Properties props = new Properties();
+			props.load(is);
+			
+//			System.out.println("props ="+props);
+			
+			for (Entry<Object, Object> entry : props.entrySet()) {
+				Class<?> cls = null;
+				Action action = null;
+//				System.out.println(entry.getKey()+" : "+entry.getValue());
+				try {
+					cls = Class.forName((String) entry.getValue());
+					action = (Action) cls.newInstance();
+				}catch(ClassNotFoundException e ){
+					action = new NullAction();
+					e.printStackTrace();
+				}
+				actionMap.put((String) entry.getKey(), action);
+			}
+			
+//			for(Entry<String, Action> entry: actionMap.entrySet()) {
+//				System.out.println(entry.getKey()+" : "+entry.getValue());
+//			}
+
+		} catch (IOException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void doProcess(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -36,98 +74,43 @@ public class BoardFrontController extends HttpServlet {
 
 		String command = request.getServletPath();
 
-		ActionForward forward = null;
-		Action action = null;
-//		try {
-//			switch (command) {
-//			case "/boardWriteForm.do":
-//				forward = new ActionForward();
-//				forward.setPath("/board/qna_board_write.jsp");
-//			case "/boardWritePro.do":
-//				action = new BoardWriteProAction();
-//				forward = action.execute(request, response);
-//			case "/boardList.do":
-//				action = new BoardListAction();
-//				forward = action.execute(request, response);
-//			case "/boardDetail.do":
-//				action = new BoardDetailAction();
-//				forward = action.execute(request, response);
-//			case "/boardReplyForm.do":
-//				action = new BoardReplyFormAction();
-//				forward = action.execute(request, response);
-//			case "/boardReplyPro.do":
-//				action = new BoardReplyProAction();
-//				forward = action.execute(request, response);
-//			case "/boardDeleteForm.do":
-//				String nowPage = request.getParameter("page");
-//				request.setAttribute("page", nowPage);
-//				int board_num = Integer.parseInt(request.getParameter("board_num"));
-//				request.setAttribute("board_num", board_num);
-//				forward = new ActionForward();
-//				forward.setPath("/board/qna_board_delete.jsp");
-//			case "/boardDeletePro.do":
-//				action = new BoardDeleteProAction();
-//				forward = action.execute(request, response);
-//			case "/file_down.do":
-//				action = new FileDownAction();
-//				forward = action.execute(request, response);
-//			case "/boardModifyForm.do":
-//				action = new BoardModifyFormAction();
-//				forward = action.execute(request, response);
-//			case "/boardModifyPro.do":
-//				action = new BoardModifyProAction();
-//				forward = action.execute(request, response);
-//			}
-//		} catch (IOException | SQLException e1) {
-//			e1.printStackTrace();
+		Action action = actionMap.get(command);
+		ActionForward forward = action.execute(request, response);
+
+//		if (command.equals("/boardWriteForm.do")) {
+//			action = new BoardWriteFormAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/boardWritePro.do")) {
+//			action = new BoardWriteProAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/boardList.do")) {
+//			action = new BoardListAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/boardDetail.do")) {
+//			action = new BoardDetailAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/boardReplyForm.do")) {
+//			action = new BoardReplyFormAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/boardReplyPro.do")) {
+//			action = new BoardReplyProAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/boardDeleteForm.do")) {
+//			action = new BoardDeleteFormAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/boardDeletePro.do")) {
+//			action = new BoardDeleteProAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/file_down.do")) {
+//			action = new FileDownAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/boardModifyForm.do")) {
+//			action = new BoardModifyFormAction();
+//			forward = action.execute(request, response);
+//		} else if (command.equals("/boardModifyPro.do")) {
+//			action = new BoardModifyProAction();
+//			forward = action.execute(request, response);
 //		}
-
-		try {
-			if (command.equals("/boardWriteForm.do")) {
-
-				forward = new ActionForward();
-				forward.setPath("/board/qna_board_write.jsp");
-
-			} else if (command.equals("/boardWritePro.do")) {
-				action = new BoardWriteProAction();
-				forward = action.execute(request, response);
-			} else if (command.equals("/boardList.do")) {
-				action = new BoardListAction();
-				forward = action.execute(request, response);
-			} else if (command.equals("/boardDetail.do")) {
-				action = new BoardDetailAction();
-				forward = action.execute(request, response);
-			} else if (command.equals("/boardReplyForm.do")) {
-				action = new BoardReplyFormAction();
-				forward = action.execute(request, response);
-			} else if (command.equals("/boardReplyPro.do")) {
-				action = new BoardReplyProAction();
-				forward = action.execute(request, response);
-			} else if (command.equals("/boardDeleteForm.do")) {
-
-				String nowPage = request.getParameter("page");
-				request.setAttribute("page", nowPage);
-				int board_num = Integer.parseInt(request.getParameter("board_num"));
-				request.setAttribute("board_num", board_num);
-				forward = new ActionForward();
-				forward.setPath("/board/qna_board_delete.jsp");
-
-			} else if (command.equals("/boardDeletePro.do")) {
-				action = new BoardDeleteProAction();
-				forward = action.execute(request, response);
-			} else if (command.equals("/file_down.do")) {
-				action = new FileDownAction();
-				forward = action.execute(request, response);
-			} else if (command.equals("/boardModifyForm.do")) {
-				action = new BoardModifyFormAction();
-				forward = action.execute(request, response);
-			} else if (command.equals("/boardModifyPro.do")) {
-				action = new BoardModifyProAction();
-				forward = action.execute(request, response);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		if (forward != null) {
 			if (forward.isRediract()) {

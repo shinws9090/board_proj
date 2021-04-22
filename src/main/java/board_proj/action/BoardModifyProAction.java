@@ -15,7 +15,8 @@ public class BoardModifyProAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, SQLException {
+			{
+		try {
 		BoardModifyService service = new BoardModifyService();
 		ActionForward forward = null;
 		
@@ -25,7 +26,8 @@ public class BoardModifyProAction implements Action {
 		String board_subject = request.getParameter("board_subject");
 		String board_content = request.getParameter("board_content");
 		
-		boolean res = service.isArticleWriter(board_num, board_pass);
+		boolean res;
+			res = service.isArticleWriter(board_num, board_pass);
 		
 		if(!res) {
 			getMessge(response,"수정할 권한이 없습니다.");
@@ -53,6 +55,10 @@ public class BoardModifyProAction implements Action {
 		forward.setPath("boardDetail.do?board_num="+board_num+"&page="+page);
 		
 		return forward;
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	private void getMessge(HttpServletResponse response,String str) throws IOException {

@@ -1,6 +1,5 @@
 package board_proj.action;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +13,7 @@ import board_proj.seavice.BoardListService;
 public class BoardListAction implements Action {
 
 	@Override
-	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
 		BoardListService service= new BoardListService();
 		
 		

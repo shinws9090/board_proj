@@ -1,6 +1,5 @@
 package board_proj.action;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,13 +12,15 @@ import board_proj.seavice.BoardDetailService;
 public class BoardDetailAction implements Action {
 
 	@Override
-	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
+	public ActionForward execute(HttpServletRequest request, HttpServletResponse response){
 		BoardDetailService service = new BoardDetailService();
 		
+		try {
 		int board_num = Integer.parseInt(request.getParameter("board_num"));
 		String page = request.getParameter("page");
 		
-		BoardDto article = service.getArtcle(board_num);
+		BoardDto article;
+			article = service.getArtcle(board_num);
 		
 		request.setAttribute("page", page);
 		request.setAttribute("article", article);
@@ -28,6 +29,11 @@ public class BoardDetailAction implements Action {
 		forward.setPath("/board/qna_board_view.jsp");
 		
 		return forward;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

@@ -10,7 +10,11 @@ import java.util.List;
 
 import board_proj.dao.BoardDao;
 import board_proj.dto.BoardDto;
-
+//사랑해요
+//사랑해요
+//사랑해요
+//사랑해요
+//사랑해요
 public class BoardDaoImpl implements BoardDao {
 	private static final BoardDaoImpl instance = new BoardDaoImpl();
 

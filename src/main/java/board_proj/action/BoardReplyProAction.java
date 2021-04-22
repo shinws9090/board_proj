@@ -2,7 +2,6 @@ package board_proj.action;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +14,8 @@ public class BoardReplyProAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, SQLException {
+			{
+		try {
 		System.out.println("여기왓다");
 		ActionForward forward = null;
 		BoardReplyService service = new BoardReplyService();
@@ -23,7 +23,7 @@ public class BoardReplyProAction implements Action {
 		BoardDto boardDto = getaticle(request);
 		
 		if(!service.insertReplayArticle(boardDto)) {
-			getMessge(response,"답변등록실패");
+				getMessge(response,"답변등록실패");
 			return forward;
 		}
 		
@@ -34,6 +34,11 @@ public class BoardReplyProAction implements Action {
 		forward.setPath("boardList.do?page="+page);
 
 		return forward;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	private void getMessge(HttpServletResponse response,String str) throws IOException {

@@ -2,7 +2,6 @@ package board_proj.action;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,8 +13,9 @@ public class BoardDeleteProAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, SQLException {
+			{
 		ActionForward forward = null;
+		try {
 		
 		BoardDeleteService service= new BoardDeleteService();
 		int board_num = Integer.parseInt(request.getParameter("board_num"));
@@ -25,7 +25,7 @@ public class BoardDeleteProAction implements Action {
 		boolean res = service.isArticleBoardWriter(board_num, pass);
 		
 		if(!res) {
-			getMessge(response,"삭제할 권한이 없습니다.");
+				getMessge(response,"삭제할 권한이 없습니다.");
 			return forward;
 		}
 		
@@ -40,6 +40,10 @@ public class BoardDeleteProAction implements Action {
 		forward.setRediract(true);
 		forward.setPath("boardList.do?page = "+page);
 		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return forward;
 	}
 
