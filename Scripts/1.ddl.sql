@@ -10,9 +10,9 @@ create table if not exists web_gradle_erp.board(
    BOARD_FILE VARCHAR(50) ,
    
    BOARD_RE_REF INT NOT NULL,
-   
    BOARD_RE_LEV INT DEFAULT 0,
    BOARD_RE_SEQ INT DEFAULT 0,
+   
    BOARD_READCOUNT INT DEFAULT 0,
    
    BOARD_DATE DATETIME default current_Timestamp,
